@@ -1,0 +1,390 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red113\green171\blue89;\red30\green31\blue33;\red202\green202\blue202;
+\red188\green135\blue186;\red212\green212\blue212;\red194\green126\blue101;\red212\green214\blue154;}
+{\*\expandedcolortbl;;\cssrgb\c50980\c71765\c42353;\cssrgb\c15686\c16471\c17255;\cssrgb\c83137\c83137\c83137;
+\cssrgb\c78824\c61176\c77647;\cssrgb\c86275\c86275\c86275;\cssrgb\c80784\c56863\c47059;\cssrgb\c86275\c86275\c66667;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28900\viewh17540\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs28 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 # @title \uc0\u55356 \u56812 \u55356 \u56807  UK Dashboard (Optimized Route + Sports Info Fixed)\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf5 \cb3 \strokec5 from\cf4 \strokec4  IPython.display \cf5 \strokec5 import\cf4 \strokec4  display\cf6 \strokec6 ,\cf4 \strokec4  HTML\cb1 \
+\cf5 \cb3 \strokec5 from\cf4 \strokec4  google.colab \cf5 \strokec5 import\cf4 \strokec4  files\cb1 \
+\cf5 \cb3 \strokec5 import\cf4 \strokec4  time\cb1 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 # ==========================================\cf4 \cb1 \strokec4 \
+\cf2 \cb3 \strokec2 # \uc0\u9881 \u65039  CONFIGURATION\cf4 \cb1 \strokec4 \
+\cf2 \cb3 \strokec2 # ==========================================\cf4 \cb1 \strokec4 \
+\cf2 \cb3 \strokec2 # \uc0\u9888 \u65039  USE A NEW TOKEN HERE\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb3 NOTION_TOKEN = \cf7 \strokec7 \'93YOUR _NOTION_TOKEN\'94\cf4 \cb1 \strokec4 \
+\cb3 DATABASE_ID = \cf7 \strokec7 "2bd5c6af88da818eb2e2f78b6ec54b9d"\cf4 \cb1 \strokec4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf8 \cb3 \strokec8 print\cf6 \strokec6 (\cf7 \strokec7 "\uc0\u9203  Generating Dashboard..."\cf6 \strokec6 )\cf4 \cb1 \strokec4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 # ==========================================\cf4 \cb1 \strokec4 \
+\cf2 \cb3 \strokec2 # THE APP CODE\cf4 \cb1 \strokec4 \
+\cf2 \cb3 \strokec2 # ==========================================\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb3 html_code = \cf7 \strokec7 """\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf7 \cb3 \strokec7 <!DOCTYPE html>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 <html lang="en">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 <head>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <meta charset="UTF-8">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <title>UK Installation Map</title>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <style>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         body \{ margin: 0; padding: 0; font-family: 'Inter', sans-serif; overflow: hidden; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         #map \{ height: 100vh; width: 100%; z-index: 1; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         .control-panel \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             position: absolute; top: 20px; right: 20px; width: 340px;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             background: rgba(255, 255, 255, 0.95);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             padding: 24px; border-radius: 16px;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             box-shadow: 0 10px 40px rgba(0,0,0,0.15);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             z-index: 1000; backdrop-filter: blur(10px);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             max-height: 90vh; overflow-y: auto;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             border: 1px solid rgba(255,255,255,0.5);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         h2 \{ margin: 0 0 8px 0; font-size: 20px; color: #0f172a; font-weight: 700; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         p \{ font-size: 13px; color: #64748b; margin-bottom: 20px; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         .btn-group \{ display: flex; gap: 12px; margin-bottom: 20px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .action-btn \{ flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.1s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .action-btn:active \{ transform: scale(0.98); \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .btn-sync \{ background-color: #2563eb; color: white; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .btn-sync:hover \{ background-color: #1d4ed8; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .btn-route \{ background-color: #10b981; color: white; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .btn-route:hover \{ background-color: #059669; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .btn-cancel \{ background-color: #ef4444; color: white; width:100%; margin-top:10px;\}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         /* Route Planner Styles */\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .route-section \{ background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 15px; margin-bottom: 20px; display: none; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .route-header \{ font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:center;\}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         .step-box \{ background: white; border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 10px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .step-title \{ font-size: 11px; text-transform: uppercase; color: #15803d; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .step-val \{ font-size: 13px; color: #111; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         .route-status \{ font-size: 12px; color: #166534; margin-bottom: 10px; font-weight: 600; text-align: center; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .route-link-btn \{ width: 100%; background: #0f172a; color: white; padding: 12px; border-radius: 8px; text-align: center; text-decoration: none; display: none; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px;\}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .route-link-btn:hover \{ background: #334155; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         /* Filters */\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .filter-section \{ border-top: 1px solid #e2e8f0; padding-top: 20px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .filter-title \{ font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .toggle-container \{ display: flex; flex-direction: column; gap: 8px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .filter-toggle \{ display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569; cursor: pointer; user-select: none; border: 1px solid transparent; transition: all 0.2s; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .filter-toggle:hover \{ background: #f1f5f9; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .filter-toggle.active \{ background: #fff; border-color: #cbd5e1; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.02); \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .filter-toggle .count \{ font-size: 11px; background: #e2e8f0; padding: 2px 6px; border-radius: 10px; color: #64748b; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         /* Popups */\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-content \{ width: 260px; font-family: 'Inter', sans-serif; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-header \{ font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-row \{ display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; align-items: center; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-label \{ color: #64748b; font-size: 12px; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-val \{ font-weight: 600; color: #334155; text-align: right; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .status-badge \{ background: #eff6ff; color: #2563eb; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-sports \{ margin-top: 15px; background: #f8fafc; padding: 10px; border-radius: 8px; font-size: 12px; text-align: center; border: 1px solid #e2e8f0; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         .popup-link \{ display: block; margin-top: 12px; text-align: center; background: #0f172a; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         .spinner \{ width: 14px; height: 14px; border: 2px solid #fff; border-bottom-color: transparent; border-radius: 50%; animation: rot 1s linear infinite; display: none; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         @keyframes rot \{ 100% \{ transform: rotate(360deg); \} \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         #log \{ font-size: 12px; color: #ef4444; margin-top: 15px; text-align: center; background: #fef2f2; padding: 8px; border-radius: 6px; display:none; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     </style>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 </head>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 <body>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <div id="map"></div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <div class="control-panel">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         <h2>Site Operations Map</h2>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         <p>Sync data & Plan Optimized Routes.</p>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         <div class="btn-group">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             <button class="action-btn btn-sync" onclick="syncNotion()">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <span class="spinner" id="loader"></span>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <span id="btn-text">Sync Data</span>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             </button>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             <button class="action-btn btn-route" onclick="toggleRouteUI()" id="btn-planner">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \uc0\u55357 \u57012  Plan Cycle Route\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             </button>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         </div>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         <div class="route-section" id="route-ui">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             <div class="route-header">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 Route Optimizer (BETA)\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <span style="font-size:16px; cursor:pointer;" onclick="toggleRouteUI()">\'d7</span>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             </div>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             <div class="step-box" id="step-1-box" style="border-color:#3b82f6; background:#eff6ff; cursor:pointer;" onclick="setMode('start')">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <div class="step-title" style="color:#2563eb">1. Start Point</div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <div class="step-val" id="start-val">Click here or pick on map...</div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             </div>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             <div class="step-box" id="step-2-box" onclick="setMode('destinations')">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <div class="step-title">2. Select Sites</div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <div class="step-val" id="sites-val">0 Selected</div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             </div>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             <div class="route-status" id="route-status">Select a Start Point first.</div>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             <a id="maps-link" class="route-link-btn" target="_blank">\uc0\u55357 \u56960  Open Optimized Route</a>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             <button class="action-btn btn-cancel" onclick="resetRoute()">Reset</button>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         </div>\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         <div class="filter-section">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             <div class="filter-title">Filter by Approval</div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             <div class="toggle-container" id="filter-container">\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 <div style="font-size:12px; color:#94a3b8; text-align:center; padding:15px;">Click "Sync Data" to load filters...</div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             </div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         </div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         <div id="log"></div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     </div>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     <script>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         const NOTION_TOKEN = "REPLACE_TOKEN";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         const DATABASE_ID = "REPLACE_ID";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         const map = L.map('map').setView([54.5, -3.0], 6);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         L.tileLayer('https://\{s\}.basemaps.cartocdn.com/rastertiles/voyager/\{z\}/\{x\}/\{y\}\{r\}.png', \{ attribution: 'CARTO', maxZoom: 19 \}).addTo(map);\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         let allData = [];\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         let markersLayer = L.layerGroup().addTo(map);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         let activeFilters = new Set();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         let markerMap = new Map();\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         // Route State\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         let routeMode = 'none'; // 'start', 'destinations', 'none'\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         let startPoint = null;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         let selectedSites = [];\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         const emojiMap = \{ "Football": "\uc0\u9917 ", "Soccer": "\u9917 ", "Basketball": "\u55356 \u57280 ", "Tennis": "\u55356 \u57278 ", "Baseball": "\u9918 ", "Cricket": "\u55356 \u57295 ", "Rugby": "\u55356 \u57289 ", "Volleyball": "\u55356 \u57296 ", "Running": "\u55356 \u57283 ", "Playground": "\u55357 \u57053 ", "Gym": "\u55356 \u57291 \u65039 ", "Swimming": "\u55356 \u57290 " \};\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function getEmoji(text) \{ if (!text) return ""; for (let [key, icon] of Object.entries(emojiMap)) \{ if (text.toLowerCase().includes(key.toLowerCase())) return icon; \} return "\uc0\u55357 \u56525 "; \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function getColor(approval) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (!approval) return "#64748b";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const app = approval.toLowerCase();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (app.includes("not") || app.includes("no") || app.includes("reject") || app.includes("decline")) return "#ef4444";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (app.includes("approved") || app.includes("yes")) return "#10b981";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (app.includes("wait") || app.includes("pending")) return "#f59e0b";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (app.includes("revisit")) return "#8b5cf6";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             return "#3b82f6";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         // Icons\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         function createIcon(color) \{ return L.divIcon(\{ className: 'custom-pin', html: `<svg viewBox="0 0 24 24" fill="$\{color\}" width="45" height="45" style="filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><circle cx="12" cy="9" r="2.5" fill="white"/></svg>`, iconSize: [45, 45], iconAnchor: [22.5, 45], popupAnchor: [0, -45] \}); \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function createStartIcon() \{ return L.divIcon(\{ className: 'start-pin', html: `<svg viewBox="0 0 24 24" fill="#2563eb" width="50" height="50" style="filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.6));"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><text x="12" y="14" font-size="10" text-anchor="middle" fill="white" font-weight="bold">START</text></svg>`, iconSize: [50, 50], iconAnchor: [25, 50], popupAnchor: [0, -50] \}); \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function createSelectedIcon(num) \{ return L.divIcon(\{ className: 'selected-pin', html: `<svg viewBox="0 0 24 24" fill="#fbbf24" width="50" height="50" style="filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><text x="12" y="14" font-size="10" text-anchor="middle" fill="black" font-weight="bold">$\{num\}</text></svg>`, iconSize: [50, 50], iconAnchor: [25, 50], popupAnchor: [0, -50] \}); \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         // --- ROUTE PLANNER LOGIC ---\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         function toggleRouteUI() \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const ui = document.getElementById('route-ui');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (ui.style.display === 'block') \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 ui.style.display = 'none';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 resetRoute();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \} else \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 ui.style.display = 'block';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 setMode('start');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function setMode(mode) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             routeMode = mode;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (mode === 'start') \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-1-box').style.borderColor = "#3b82f6";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-1-box').style.backgroundColor = "#eff6ff";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-2-box').style.borderColor = "#bbf7d0";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-2-box').style.backgroundColor = "white";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('route-status').innerText = "Click a pin on the map to set START point.";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \} else if (mode === 'destinations') \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 if (!startPoint) \{ setMode('start'); return; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-1-box').style.borderColor = "#bbf7d0";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-1-box').style.backgroundColor = "white";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-2-box').style.borderColor = "#3b82f6";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('step-2-box').style.backgroundColor = "#eff6ff";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('route-status').innerText = "Now click sites to add to your route.";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function resetRoute() \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             startPoint = null;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             selectedSites = [];\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             routeMode = 'none';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             document.getElementById('start-val').innerText = "Click here or pick on map...";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             document.getElementById('sites-val').innerText = "0 Selected";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             document.getElementById('maps-link').style.display = 'none';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             document.getElementById('route-status').innerText = "";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             renderMap();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function handleMarkerClick(d, marker) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (routeMode === 'none') return; // Standard popup\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             marker.closePopup(); // Prevent default popup\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             if (routeMode === 'start') \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 startPoint = d;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('start-val').innerText = d.name;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 setMode('destinations');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 renderMap();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \} else if (routeMode === 'destinations') \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 if (startPoint && d.name === startPoint.name) return; // Can't visit start\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 const idx = selectedSites.findIndex(site => site.name === d.name);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 if (idx > -1) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     selectedSites.splice(idx, 1); // Deselect\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \} else \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     if (selectedSites.length >= 23) \{ alert("Google Maps limit reached (23 stops)."); return; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     selectedSites.push(d);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('sites-val').innerText = `$\{selectedSites.length\} Selected`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 generateOptimizedLink();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 renderMap();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         // --- \uc0\u55358 \u56800  INSANE OPTIMIZATION (Greedy Nearest Neighbor) ---\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         function calculateOptimizedOrder() \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (!startPoint || selectedSites.length === 0) return [];\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             let unvisited = [...selectedSites];\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             let current = startPoint;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             let path = [];\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             while (unvisited.length > 0) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 let nearest = null;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 let minDist = Infinity;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 let nearestIdx = -1;\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 for (let i = 0; i < unvisited.length; i++) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const site = unvisited[i];\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const dist = Math.sqrt(Math.pow(site.lat - current.lat, 2) + Math.pow(site.lng - current.lng, 2));\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     if (dist < minDist) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                         minDist = dist;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                         nearest = site;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                         nearestIdx = i;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 path.push(nearest);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 current = nearest;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 unvisited.splice(nearestIdx, 1);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             return path;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function generateOptimizedLink() \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (!startPoint || selectedSites.length === 0) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 document.getElementById('maps-link').style.display = 'none';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 return;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             const optimizedSites = calculateOptimizedOrder();\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             const origin = `&origin=$\{startPoint.lat\},$\{startPoint.lng\}`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const lastSite = optimizedSites[optimizedSites.length - 1];\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const destination = `&destination=$\{lastSite.lat\},$\{lastSite.lng\}`;\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             let waypointsParam = "";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (optimizedSites.length > 1) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 const intermediate = optimizedSites.slice(0, -1);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 waypointsParam = `&waypoints=$\{intermediate.map(s => `$\{s.lat\},$\{s.lng\}`).join('|')\}`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             const finalUrl = `https://www.google.com/maps/dir/?api=1$\{origin\}$\{destination\}$\{waypointsParam\}&travelmode=bicycling`;\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             const linkBtn = document.getElementById('maps-link');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             linkBtn.href = finalUrl;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             linkBtn.style.display = 'block';\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7             document.getElementById('route-status').innerHTML = `\uc0\u9989  Route Optimized for <strong>$\{selectedSites.length\}</strong> sites!`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         // --- NOTION SYNC & STANDARD MAP ---\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         async function syncNotion() \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const btn = document.querySelector('.btn-sync'); const loader = document.getElementById('loader'); const log = document.getElementById('log');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             btn.disabled = true; loader.style.display = 'block'; document.getElementById('btn-text').innerText = "Fetching..."; log.style.display = 'none';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             let accumulatedResults = []; let hasMore = true; let startCursor = undefined;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             try \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 while (hasMore) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const proxyUrl = "https://corsproxy.io/?";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const targetUrl = `https://api.notion.com/v1/databases/$\{DATABASE_ID\}/query`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const payload = \{ page_size: 100 \}; if (startCursor) payload.start_cursor = startCursor;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), \{ method: 'POST', headers: \{ 'Authorization': `Bearer $\{NOTION_TOKEN\}`, 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json' \}, body: JSON.stringify(payload) \});\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     if (!response.ok) throw new Error(`Status: $\{response.status\}`);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const data = await response.json(); accumulatedResults = accumulatedResults.concat(data.results); hasMore = data.has_more; startCursor = data.next_cursor;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     document.getElementById('btn-text').innerText = `Fetched $\{accumulatedResults.length\}...`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 allData = accumulatedResults.map(page => parsePage(page)).filter(item => item.lat !== null);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 generateFilters(allData); renderMap(); document.getElementById('btn-text').innerText = `Synced $\{allData.length\} Sites`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \} catch (error) \{ console.error(error); log.style.display = 'block'; log.innerText = "Error: " + error.message; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             finally \{ btn.disabled = false; loader.style.display = 'none'; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7         function extractProp(props, name, type) \{ const prop = props[name]; if (!prop) return ""; try \{ if (type === 'title') return prop.title[0]?.plain_text || "Untitled"; if (type === 'rich_text') return prop.rich_text[0]?.plain_text || ""; if (type === 'select') return prop.select?.name || ""; if (type === 'status') return prop.status?.name || ""; if (type === 'number') return prop.number || 0; if (type === 'formula') return prop.formula.string || prop.formula.number || ""; \} catch (e) \{ return ""; \} return ""; \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         function parsePage(page) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const p = page.properties; const name = extractProp(p, 'Site Name', 'title');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const gpsProp = p['GPS Coordinates ']; let gpsRaw = ""; if (gpsProp && gpsProp.rich_text.length > 0) gpsRaw = gpsProp.rich_text[0].plain_text;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const matches = gpsRaw.match(/-?\\\\d+(\\\\.\\\\d+)?/g); let lat = null, lng = null; if (matches && matches.length >= 2) \{ lat = parseFloat(matches[0]); lng = parseFloat(matches[1]); \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const status = extractProp(p, 'Status', 'select'); const approval = extractProp(p, 'Pre Installation Approval', 'select') || "Unspecified"; const score = extractProp(p, 'Site Score', 'formula'); const link = extractProp(p, 'Formula', 'formula');\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const sports = [extractProp(p, 'Compartment 1', 'select'), extractProp(p, 'Compartment 2', 'select'), extractProp(p, 'Compartment 3', 'select')].filter(Boolean).map(s => `$\{getEmoji(s)\} $\{s\}`).join("  \'95  ");\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             return \{ lat, lng, name, status, approval, score, link, sports \};\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         function generateFilters(data) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const container = document.getElementById('filter-container'); container.innerHTML = "";\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             const categories = [...new Set(data.map(d => d.approval))].sort(); activeFilters = new Set(categories);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             categories.forEach(cat => \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 const count = data.filter(d => d.approval === cat).length; const div = document.createElement('div'); div.className = 'filter-toggle active';\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 const color = getColor(cat); div.innerHTML = `<div style="display:flex; align-items:center;"><span style="width:10px; height:10px; border-radius:50%; background:$\{color\}; display:inline-block; margin-right:8px;"></span> $\{cat\}</div><span class="count">$\{count\}</span>`;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 div.onclick = () => \{ if (activeFilters.has(cat)) \{ activeFilters.delete(cat); div.classList.remove('active'); div.style.opacity = "0.6"; \} else \{ activeFilters.add(cat); div.classList.add('active'); div.style.opacity = "1"; \} renderMap(); \}; container.appendChild(div);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \});\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         function renderMap() \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             markersLayer.clearLayers(); const bounds = []; markerMap.clear();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             allData.forEach(d => \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 if (!activeFilters.has(d.approval)) return;\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 let icon;\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 if (startPoint && d.name === startPoint.name) \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     icon = createStartIcon();\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \} else \{\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     const isSelected = selectedSites.findIndex(s => s.name === d.name);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                     icon = (isSelected > -1) ? createSelectedIcon(isSelected + 1) : createIcon(getColor(d.approval));\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 \}\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 const marker = L.marker([d.lat, d.lng], \{ icon: icon \});\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 // --- SPORTS INFO ADDED BACK HERE ---\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 const popupHtml = `<div class="popup-content"><div class="popup-header">$\{d.name\}</div><div class="popup-row"><span class="popup-label">Approval</span> <span class="popup-val" style="color:$\{getColor(d.approval)\}">$\{d.approval\}</span></div><div class="popup-row"><span class="popup-label">Current Status</span> <span class="status-badge">$\{d.status || "N/A"\}</span></div><div class="popup-sports">$\{d.sports || "No sports info"\}</div><a href="$\{d.link\}" target="_blank" class="popup-link">Show More Details \uc0\u8599 </a></div>`;\cf4 \cb1 \strokec4 \
+\
+\cf7 \cb3 \strokec7                 marker.bindPopup(popupHtml);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 marker.on('click', () => handleMarkerClick(d, marker));\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7                 markersLayer.addLayer(marker); bounds.push([d.lat, d.lng]);\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             \});\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7             if (bounds.length > 0 && routeMode === 'none') map.fitBounds(bounds, \{ padding: [50, 50] \});\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7         \}\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7     </script>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 </body>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 </html>\cf4 \cb1 \strokec4 \
+\cf7 \cb3 \strokec7 """\cf4 \cb1 \strokec4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb3 final_html = html_code.replace\cf6 \strokec6 (\cf7 \strokec7 "REPLACE_TOKEN"\cf6 \strokec6 ,\cf4 \strokec4  NOTION_TOKEN\cf6 \strokec6 )\cf4 \strokec4 .replace\cf6 \strokec6 (\cf7 \strokec7 "REPLACE_ID"\cf6 \strokec6 ,\cf4 \strokec4  DATABASE_ID\cf6 \strokec6 )\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf5 \cb3 \strokec5 with\cf4 \strokec4  \cf8 \strokec8 open\cf6 \strokec6 (\cf7 \strokec7 'UK_Site_Map_Final.html'\cf6 \strokec6 ,\cf4 \strokec4  \cf7 \strokec7 'w'\cf6 \strokec6 )\cf4 \strokec4  \cf5 \strokec5 as\cf4 \strokec4  f\cf6 \strokec6 :\cf4 \strokec4  f.write\cf6 \strokec6 (\cf4 \strokec4 final_html\cf6 \strokec6 )\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb3 files.download\cf6 \strokec6 (\cf7 \strokec7 'UK_Site_Map_Final.html'\cf6 \strokec6 )\cf4 \cb1 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+\cf8 \cb3 \strokec8 print\cf6 \strokec6 (\cf7 \strokec7 "\uc0\u9989  Done! Downloaded UK_Site_Map_Final.html"\cf6 \strokec6 )\cf4 \cb1 \strokec4 \
+}

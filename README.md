@@ -1,3 +1,4 @@
+# Loom Link https://www.loom.com/share/7a581b854d7d43019867e37716930532
 # 🇬🇧 UK Site Intelligence & Operations Dashboard
 
 This repository contains a suite of tools designed to map UK parks, identify valid installation sites for pods, and manage operations via a synchronized dashboard. It integrates **Google Sheets**, **Notion**, and **Interactive Maps** (Leaflet/Folium).
